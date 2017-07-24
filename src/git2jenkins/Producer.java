@@ -19,7 +19,7 @@ import org.json.*;
 
 public class Producer {
 
-    public static void produce(JSONObject jsonObject) {
+    public static void produce(String json) {
         ConnectionFactory connectionFactory;
         Connection connection = null;
         Session session;
@@ -28,16 +28,16 @@ public class Producer {
         connectionFactory = new ActiveMQConnectionFactory(
                 ActiveMQConnection.DEFAULT_USER,
                 ActiveMQConnection.DEFAULT_PASSWORD,
-                "tcp://localhost:8161");
+                "http://localhost:8161");
         try {
             connection = connectionFactory.createConnection();
             connection.start();
             session = connection.createSession(Boolean.TRUE,
                     Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue("FirstQueue");
+            destination = session.createQueue("JsonQueue");
             producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-            sendJSONObject(session, producer,jsonObject);
+            sendJSONObject(session, producer,json);
             session.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,11 +50,10 @@ public class Producer {
         }
     }
 
-    public static void sendJSONObject(Session session, MessageProducer producer,JSONObject jsonObject)
+    public static void sendJSONObject(Session session, MessageProducer producer,String json)
             throws Exception {
-        String js=jsonObject.toString();
             TextMessage message = session
-                    .createTextMessage(js);
+                    .createTextMessage(json);
             producer.send(message);
     }
 }
