@@ -10,12 +10,13 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.json.JSONObject;
 
 public class Consumer {
-    public static TextMessage consume(String[] args) {
+
+    public static JSONObject consume() {
         ConnectionFactory connectionFactory;
         Connection connection = null;
         Session session;
@@ -24,18 +25,18 @@ public class Consumer {
         connectionFactory = new ActiveMQConnectionFactory(
                 ActiveMQConnection.DEFAULT_USER,
                 ActiveMQConnection.DEFAULT_PASSWORD,
-                "tcp://localhost:8161");
+                "http://localhost:61616");
         TextMessage message=null;
+        JSONObject js=null;
         try {
             connection = connectionFactory.createConnection();
             connection.start();
             session = connection.createSession(Boolean.FALSE,
                     Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue("FirstQueue");
+            destination = session.createQueue("JsonQueue");
             consumer = session.createConsumer(destination);
-            while (true) {
-                message = (TextMessage) consumer.receive();
-            }
+            message = (TextMessage) consumer.receive();
+            js=new JSONObject(message);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -45,6 +46,6 @@ public class Consumer {
             } catch (Throwable ignore) {
             }
         }
-        return message;
+        return js;
     }
 }
