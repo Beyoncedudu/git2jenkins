@@ -1,13 +1,6 @@
-package git2jenkins;
+package git2MQ;
 
-import java.net.URL;
-
-import com.sun.net.httpserver.HttpPrincipal;
-import org.json.*;
 import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
-import java.net.SocketException;
 import java.net.InetSocketAddress;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

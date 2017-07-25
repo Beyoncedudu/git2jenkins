@@ -1,4 +1,4 @@
-package git2jenkins;
+package git2MQ;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -8,7 +8,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.json.*;
 
 /**
  * Created by 85081 on 2017/7/19.
@@ -28,15 +27,15 @@ public class Producer {
         connectionFactory = new ActiveMQConnectionFactory(
                 ActiveMQConnection.DEFAULT_USER,
                 ActiveMQConnection.DEFAULT_PASSWORD,
-                "http://localhost:8161");
+                "tcp://localhost:61616");
         try {
             connection = connectionFactory.createConnection();
             connection.start();
             session = connection.createSession(Boolean.TRUE,
                     Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue("JsonQueue");
+            destination = session.createQueue("FirstQueue");
             producer = session.createProducer(destination);
-            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             sendJSONObject(session, producer,json);
             session.commit();
         } catch (Exception e) {
