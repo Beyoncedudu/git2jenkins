@@ -1,4 +1,4 @@
-package git2jenkins;
+package MQ2jenkins;
 
 /**
  * Created by 85081 on 2017/7/19.
@@ -10,13 +10,14 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import MQ2jenkins.jenkinsSender;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.json.JSONObject;
 
 public class Consumer {
 
-    public static JSONObject consume() {
+    public static JSONObject consume(String url) {
         ConnectionFactory connectionFactory;
         Connection connection = null;
         Session session;
@@ -37,6 +38,8 @@ public class Consumer {
             consumer = session.createConsumer(destination);
             message = (TextMessage) consumer.receive();
             js=new JSONObject(message);
+            jenkinsSender jS=new jenkinsSender();
+            jS.sendPost(url,js);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
